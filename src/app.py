@@ -89,11 +89,15 @@ def get_activities():
 
 
 @app.post("/activities/{activity_name}/signup")
-def signup_for_activity(activity_name: str, email: str):
+def signup_for_activity(activity_name: str, email: str, age: int):
     """Sign up a student for an activity"""
     # Validate activity exists
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Activity not found")
+
+    # Validate age
+    if age <= 0:
+        raise HTTPException(status_code=400, detail="Age must be a positive number")
 
     # Get the specific activity
     activity = activities[activity_name]
@@ -102,4 +106,4 @@ def signup_for_activity(activity_name: str, email: str):
         raise HTTPException(status_code=400, detail="Student already signed up for this activity")
     # Add student
     activity["participants"].append(email)
-    return {"message": f"Signed up {email} for {activity_name}"}
+    return {"message": f"Signed up {email} (age {age}) for {activity_name}"}
